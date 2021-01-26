@@ -4,17 +4,29 @@ class ImageCard extends Component {
     constructor(props) {
         super(props);
 
+        this.state = { spans: 0 }
+
+        // create ref on each image as its created so it can be referenced in DOM once rendered
         this.imageRef = React.createRef();
     }
 
     componentDidMount() {
-        console.log('this.imageRef', this.imageRef)
+        // auto-sizing unsplash images on image load
+        this.imageRef.current.addEventListener('load', this.setSpans)
+    }
+
+    setSpans = () => {
+        const height = this.imageRef.current.clientHeight;
+
+        const spans = Math.ceil(height / 10 + 1);
+
+        this.setState({ spans })
     }
 
     render() {
         const { description, urls } = this.props.image;
         return (
-            <div>
+            <div style={{ gridRowEnd: `span ${this.state.spans}` }}>
                 <img
                     ref={this.imageRef}
                     src={urls.regular}
